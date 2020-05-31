@@ -1,4 +1,4 @@
-IMAGE_NAME = "hashicorp/bionic64"
+IMAGE_NAME = "ubuntu/bionic64"
 N = 2
 
 Vagrant.configure("2") do |config|
@@ -45,19 +45,19 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    config.vm.define "node-2" do |node|
-        node.vm.box = IMAGE_NAME
-        node.vm.network "private_network", ip: "192.168.50.12"
-        node.vm.hostname = "node-2"
-        node.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "kubernetes-setup/worker-playbook.yml"
-            ansible.compatibility_mode = "2.0"
-            ansible.extra_vars = {
-                ansible_python_interpreter:"/usr/bin/python3",
-                node_ip: "192.168.50.12",
-            }
-        end
-    end
+    #config.vm.define "node-2" do |node|
+    #    node.vm.box = IMAGE_NAME
+    #    node.vm.network "private_network", ip: "192.168.50.12"
+    #    node.vm.hostname = "node-2"
+    #    node.vm.provision "ansible_local" do |ansible|
+    #        ansible.playbook = "kubernetes-setup/worker-playbook.yml"
+    #        ansible.compatibility_mode = "2.0"
+    #        ansible.extra_vars = {
+    #            ansible_python_interpreter:"/usr/bin/python3",
+    #            node_ip: "192.168.50.12",
+    #        }
+    #    end
+    #end
 
     #(1..N).each do |i|
     #    config.vm.define "node-#{i}" do |node|

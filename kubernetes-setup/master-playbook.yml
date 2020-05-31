@@ -15,7 +15,7 @@
       state: restarted
 
   - name: Initialize the Kubernetes cluster using kubeadm
-    command: kubeadm init --apiserver-advertise-address="192.168.50.10" --pod-network-cidr=192.168.0.0/16 --apiserver-cert-extra-sans="192.168.50.10" --node-name k8s-master
+    command: kubeadm init --apiserver-advertise-address="192.168.50.10" --pod-network-cidr=172.16.0.0/20 --apiserver-cert-extra-sans="192.168.50.10" --node-name k8s-master
   
   - name: Setup kubeconfig for vagrant user
     command: "{{ item }}"
@@ -23,10 +23,15 @@
       - mkdir -p /home/vagrant/.kube
       - cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
       - chown vagrant:vagrant /home/vagrant/.kube/config
+
+  - name: Copy calico.yaml to server location
+    copy: src=calico.yaml dest=/home/vagrant/calico.yaml mode=0777
   
   - name: Install calico pod network
     become: false
-    command: kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+    command: kubectl apply -f /home/vagrant/calico.yaml
+    #command: kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+    #https://docs.projectcalico.org/manifests/calico.yaml
 
   - name: Generate join command
     command: kubeadm token create --print-join-command
@@ -38,9 +43,9 @@
   - name: Install Helm
     command: "{{ item }}"
     with_items:
-      - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-      - chmod 700 get_helm.sh
-      - ./get_helm.sh
+      - curl -fsSL -o /home/vagrant/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      - chmod 700 /home/vagrant/get_helm.sh
+      - /home/vagrant/get_helm.sh
 
   - name: Add Helm repo
     command: "{{ item }}"
@@ -56,6 +61,7 @@
   - name: Set kubectl and helm aliases
     blockinfile:
       path: /home/vagrant/.bashrc
+      marker_begin: "aliases"
       block: |
         alias k=kubectl
         alias h=helm
@@ -63,6 +69,7 @@
   - name: Set kubectl and helm code completion
     blockinfile:
       path: /home/vagrant/.bashrc
+      marker_begin: "completion"
       block: |
         source <(kubectl completion bash)
         source <(kubectl completion bash | sed s/kubectl/k/g)
