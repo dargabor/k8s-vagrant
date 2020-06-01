@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provision "ansible_local" do |ansible|
-        ansible.playbook = "kubernetes-setup/common-playbook.yml"
+        ansible.playbook = "provision/common-playbook.yml"
         ansible.compatibility_mode = "2.0"
         ansible.extra_vars = {
             ansible_python_interpreter:"/usr/bin/python3",
@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
         master.vm.network "private_network", ip: "192.168.50.10"
         master.vm.hostname = "k8s-master"
         master.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "kubernetes-setup/master-playbook.yml"
+            ansible.playbook = "provision/master-playbook.yml"
             ansible.compatibility_mode = "2.0"
             ansible.extra_vars = {
                 ansible_python_interpreter:"/usr/bin/python3",
@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
         node.vm.network "private_network", ip: "192.168.50.11"
         node.vm.hostname = "node-1"
         node.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "kubernetes-setup/worker-playbook.yml"
+            ansible.playbook = "provision/worker-playbook.yml"
             ansible.compatibility_mode = "2.0"
             ansible.extra_vars = {
                 ansible_python_interpreter:"/usr/bin/python3",
@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
     #    node.vm.network "private_network", ip: "192.168.50.12"
     #    node.vm.hostname = "node-2"
     #    node.vm.provision "ansible_local" do |ansible|
-    #        ansible.playbook = "kubernetes-setup/worker-playbook.yml"
+    #        ansible.playbook = "provision/worker-playbook.yml"
     #        ansible.compatibility_mode = "2.0"
     #        ansible.extra_vars = {
     #            ansible_python_interpreter:"/usr/bin/python3",
@@ -65,7 +65,7 @@ Vagrant.configure("2") do |config|
     #        node.vm.network "private_network", ip: "192.168.50.#{i + 10}"
     #        node.vm.hostname = "node-#{i}"
     #        node.vm.provision "ansible_local" do |ansible|
-    #            ansible.playbook = "kubernetes-setup/worker-playbook.yml"
+    #            ansible.playbook = "provision/worker-playbook.yml"
     #            ansible.compatibility_mode = "2.0"
     #            ansible.extra_vars = {
     #                node_ip: "192.168.50.#{i + 10}",
