@@ -59,7 +59,8 @@
       - chmod 700 /home/vagrant/get_helm.sh
       - /home/vagrant/get_helm.sh
 
-  - name: Add Helm repo
+  - name: Add official Helm repo
+    become: false
     command: "{{ item }}"
     with_items:
       - helm repo add stable https://kubernetes-charts.storage.googleapis.com/
